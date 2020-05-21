@@ -5,6 +5,8 @@ from scipy.optimize import curve_fit
 import scipy.stats as s
 import scipy.special as sps
 
+plt.style.use('seaborn')
+
 def collatz(N, found_seqs):
     if N == 1: # base case
         return 0
@@ -36,6 +38,9 @@ def maxNum(N):
 
 def f(x, a, c):
     return a*np.log(x) + c
+
+def g(x, a, b, c):
+    return a*np.log(x)**c + b
 
 def plotAveLen(N):
     """
@@ -198,6 +203,45 @@ def hist(N):
 
     plt.show()
 
+def moments(N):
+    # found_seqs = {} # dictionary of number : Collatz length of number
+    # lens = [n for n in range(2, N + 1)]
+    # nums = [collatz(n, found_seqs) for n in lens]
+    lens = aveLen(N)
+    m1 = [0.5]
+    m2 = [0.5]
+    m3 = [0.5]
+    m4 = [0.5]
+    m5 = [0.5]
+    for n in range(1, len(lens)):
+        m1.append((m1[-1]*n + lens[n])/(n+1))
+        m2.append((m2[-1]*n + lens[n]**2)/(n+1))
+        m3.append((m3[-1]*n + lens[n]**3)/(n+1))
+        m4.append((m4[-1]*n + lens[n]**4)/(n+1))
+        m5.append((m5[-1]*n + lens[n]**5)/(n+1))
+    # print(m1, m2, m3, m4, m5)
+    return m1, m2, m3, m4, m5
+
+def plot_moments(N):
+    m1, m2, m3, m4, m5 = moments(N)
+    x = [x for x in range(1, len(m1) + 1)]
+    # plt.plot(x, m1)
+    # plt.plot(x, m2)
+    # plt.plot(x, m3)
+    # plt.plot(x, m4)
+    # plt.plot(x, m5)
+    # plt.show()
+    a1, b1, c1 = curve_fit(g, x, m1)[0]
+    a2, b2, c2 = curve_fit(g, x, m2)[0]
+    a3, b3, c3 = curve_fit(g, x, m3)[0]
+    a4, b4, c4 = curve_fit(g, x, m4)[0]
+    a5, b5, c5 = curve_fit(g, x, m5)[0]
+    print(f'moment 1: {a1, b1, c1}')
+    print(f'moment 2: {a2, b2, c2}')
+    print(f'moment 3: {a3, b3, c3}')
+    print(f'moment 4: {a4, b4, c4}')
+    print(f'moment 5: {a5, b5, c5}')
+
 def main():
     N = int(input("Enter the upper bound for N: "))
     # plotAveResid(N)
@@ -207,6 +251,7 @@ def main():
     # plotMaxNum(N)
     # plotSeq(N)
     # plot_var(N)
-    hist(N)
+    # hist(N)
+    plot_moments(N)
 
 main()

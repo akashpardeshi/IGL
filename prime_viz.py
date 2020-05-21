@@ -4,7 +4,8 @@ from scipy.optimize import curve_fit
 import scipy.stats as s
 
 
-plt.style.use('seaborn-poster')
+# plt.style.use('seaborn-poster')
+plt.style.use('seaborn')
 # plt.style.use('ggplot')
 
 def sieve(N):
@@ -258,42 +259,42 @@ def hi(N):
     a3, b3, c3 = curve_fit(g, x, m3)[0]
     a4, b4, c4 = curve_fit(g, x, m4)[0]
     a5, b5, c5 = curve_fit(g, x, m5)[0]
-    print(f'moment 1: {a1, b1, c1}')
-    print(f'moment 2: {a2, b2, c2}')
-    print(f'moment 3: {a3, b3, c3}')
-    print(f'moment 4: {a4, b4, c4}')
-    print(f'moment 5: {a5, b5, c5}')
+    print(f'moment 1: {c1}')
+    print(f'moment 2: {c2}')
+    print(f'moment 3: {c3}')
+    print(f'moment 4: {c4}')
+    print(f'moment 5: {c5}')
     plt.show()
 
 def error(N):
     a, b, c = 1.2785858207407403, -0.12907491094053686, 0.953059290922383 
     primes = sieve2(N)
     x = [x for x in range(1, len(primes) + 1)]
-    y1 = np.abs([primes[n] - (n+1)*np.log(n+1) for n in range(1, len(x))])
+    # y1 = np.abs([primes[n] - (n+1)*np.log(n+1) for n in range(1, len(x))])
     y2 = np.abs([primes[n] - (primes[n-1] + g(n-1, a, b, c)) for n in range(1, len(x))])
 
-    fig1 = plt.title('Errors in Predictions of Primes with Analytical and Probabilistic Approaches', fontsize=20)
-    label = plt.xlabel(r'$n$', fontsize=15)
-    plt.ylabel(r'$\vert p_{n+1} - \hat{p}_{n+1} \vert$', fontsize=15)
+    # fig1 = plt.title('Errors in Predictions of Primes with Analytical and Probabilistic Approaches', fontsize=20)
+    # label = plt.xlabel(r'$n$', fontsize=15)
+    # plt.ylabel(r'$\vert p_{n+1} - \hat{p}_{n+1} \vert$', fontsize=15)
 
-    plt.plot(x[:-1], y1, '.', color='orchid', alpha=0.5, markersize=5, label=r'Errors when $\hat{p}_{n+1} = (n+1)\log(n+1)$')
-    plt.plot(x[:-1], y2, '.', color='lightseagreen', alpha=0.5, markersize=5, label=r'Errors when $\hat{p}_{n+1} = p_{n} + \alpha(n)$')
-    leg = plt.legend(loc='upper left', fontsize='large')
-    leg.get_frame().set_linewidth(0.0)
-    plt.show(fig1)
+    # plt.plot(x[:-1], y1, '.', color='orchid', alpha=0.5, markersize=5, label=r'Errors when $\hat{p}_{n+1} = (n+1)\log(n+1)$')
+    # plt.plot(x[:-1], y2, '.', color='lightseagreen', alpha=0.5, markersize=5, label=r'Errors when $\hat{p}_{n+1} = p_{n} + \alpha(n)$')
+    # leg = plt.legend(loc='upper left', fontsize='large')
+    # leg.get_frame().set_linewidth(0.0)
+    # plt.show(fig1)
 
-    fig2 = plt.subplot(1, 2, 1)
-    plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
-    plt.title('Histogram of Errors in Analytic \n Predictions of Primes', fontsize=20)
-    plt.xlabel(r'Errors: $\vert p_{n+1} - \hat{p}_{n+1} \vert$', fontsize=15)
-    plt.ylabel('Frequency', fontsize=15)
-    n, bins, patches = plt.hist(y1, bins=50, color='orchid', label=r'Errors when $\hat{p}_{n+1} = (n+1)\log(n+1)$')
-    plt.xticks(np.arange(0, max(bins)+1, 200000))
-    leg = plt.legend(fontsize='large')
-    leg.get_frame().set_linewidth(0.0)
-    # plt.show(fig2)
+    # fig2 = plt.subplot(1, 2, 1)
+    # plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+    # plt.title('Histogram of Errors in Analytic \n Predictions of Primes', fontsize=20)
+    # plt.xlabel(r'Errors: $\vert p_{n+1} - \hat{p}_{n+1} \vert$', fontsize=15)
+    # plt.ylabel('Frequency', fontsize=15)
+    # n, bins, patches = plt.hist(y1, bins=50, color='orchid', label=r'Errors when $\hat{p}_{n+1} = (n+1)\log(n+1)$')
+    # plt.xticks(np.arange(0, max(bins)+1, 200000))
+    # leg = plt.legend(fontsize='large')
+    # leg.get_frame().set_linewidth(0.0)
+    # # plt.show(fig2)
 
-    plt.subplot(1, 2, 2)
+    # plt.subplot(1, 2, 2)
     plt.title('Histogram of Errors in Probabilistic \n Predictions of Primes', fontsize=20)
     plt.xlabel(r'Errors: $\vert p_{n+1} - \hat{p}_{n+1} \vert$', fontsize=15)
     plt.ylabel('Frequency', fontsize=15)
@@ -301,7 +302,22 @@ def error(N):
     plt.xticks(np.arange(0, max(bins)+1, 20))
     leg = plt.legend(fontsize='large')
     leg.get_frame().set_linewidth(0.0)
-    plt.show(fig2)
+    plt.show()
+
+def asy(N):
+    r1 = ave_gap(N)[-1]
+    primes = sieve2(N)
+    r2 = sum([np.log(p) for p in primes]) / len(primes)
+    return r1, r2
+
+def plot(N):
+    x = np.arange(2, N)
+    y = [] 
+    for n in range(2, N):
+        r1, r2 = asy(n)
+        y.append(r1/r2)
+    plt.plot(x, y)
+    plt.show()
 
 def main():
     N = int(input('Enter a value for N: '))
@@ -314,7 +330,10 @@ def main():
     # plot_var(N)
     # plot_mean_var(N)
     # hist(N)
-    error(N)
+    # error(N)
     # hi(N)
+    # asy(N)
+    plot(N)
+
 
 main()
