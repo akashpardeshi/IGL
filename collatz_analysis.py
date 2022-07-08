@@ -126,7 +126,7 @@ def plotCollatzSeqLengthMoment(N, k, save_fig=False):
     ax2.legend(loc='lower right')
 
     if save_fig:
-        plt.savefig(f'figures/collatz_seq_length_moment{k}.png')
+        plt.savefig(f'figures/collatz_seq_length_moment_{k}.png')
     plt.show()
 
 def plotCollatzSeqLengthHistogram(N, save_fig=False):
